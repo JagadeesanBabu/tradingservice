@@ -1,0 +1,27 @@
+info:
+    title: Trading Service
+    description: '@project.description@'
+    build:
+    version: '@project.version@'
+
+spring:
+    application:
+        name: trading-service
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        username: postgres
+        password: postgres
+        url: jdbc:postgresql://0.0.0.0:5431/trade
+    jpa:
+        hibernate:
+            ddl-auto: validate
+
+swagger:
+    pathmatchers: /favicon.ico, /v2/**
+web:
+    cors:
+        enabled: true
+        origins: "*"
+        methods: "*"
+        headers: "*"
+        pattern: "/**"

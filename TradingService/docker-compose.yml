@@ -1,0 +1,25 @@
+version: '3.6'
+
+services:
+  postgres:
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=trade
+    ports:
+      - "5431:5432"
+    networks:
+      - backend_net
+    volumes:
+      - $HOME/pgdata-trade:/var/lib/postgresql/data
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    environment:
+      - "API_URL=http://localhost:8080/v2/api-docs"
+    ports:
+      - "3200:8080"
+networks:
+  backend_net:
+    driver: bridge
