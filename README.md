@@ -11,6 +11,7 @@ TRADING SERVICE API is a Spring Boot project that exposes a REST API to query th
 - Docker
 - Dbeaver (Postgres Client Tool) `https://dbeaver.io/download/`
 - Open Jdk 14 (`brew cask install java`)
+- Gradle `brew cask install gradle`
 
 
 ### Service Dependencies
@@ -34,7 +35,10 @@ Two images are available now in docker compose
 
 ### source code
 
+I
 `gradle` is the dependency management tool and is also provided along.
+
+- To create a gradle wrapper `gradle wrapper` for the first time
 
 - To compile: `./gradlew clean classes`
 
