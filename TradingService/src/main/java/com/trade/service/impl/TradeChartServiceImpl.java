@@ -2,21 +2,20 @@ package com.trade.service.impl;
 
 import com.trade.jpa.TradeDataRepository;
 import com.trade.mapper.TradeDataMapper;
-import com.trade.pojo.AverageDataDto;
-import com.trade.pojo.PriceChangeDataDto;
-import com.trade.pojo.TradeDataBaseDto;
-import com.trade.pojo.TradeRelativeDataDto;
+import com.trade.pojo.*;
 import com.trade.pojo.request.FilterRequest;
-import com.trade.service.AveragePriceChangeCalculator;
-import com.trade.service.PriceChangeService;
-import com.trade.service.RelativeStrengthIndexCalculator;
-import com.trade.service.TradeChartService;
+import com.trade.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,6 +27,7 @@ public class TradeChartServiceImpl implements TradeChartService {
     private final RelativeStrengthIndexCalculator relativeIndexCalculator;
     private final AveragePriceChangeCalculator averagePriceChangeCalculator;
     private final PriceChangeService priceChangeService;
+    private final EmaCalculatorService emaCalculatorService;
 
     @Override
     public List<TradeDataBaseDto> getDailyTradeClosedPriceByIndex(String index, FilterRequest filterRequest) {
@@ -43,6 +43,22 @@ public class TradeChartServiceImpl implements TradeChartService {
         List<AverageDataDto> averageDataDtos = averagePriceChangeCalculator.calculate(priceChangeDataDtos, periodLength);
         //Step 3: relative index calculator
         return relativeIndexCalculator.calculate(averageDataDtos);
+    }
+
+    @Override
+    public List<TradeMovAvgConvDivgDto> getDailyTradeDataByMacd(String index, FilterRequest filterRequest) {
+        List<TradeDataBaseDto> initialTradeData = mapper.toTradeDataDtoList(repository.findAllByIndex(index, getPageRequest(filterRequest)));
+
+        //Step 1: Calculate 12 EMA & 26 EMA
+        // Key 12 EMA & 26 EMA
+        List<BigDecimal> closedPriceValues = initialTradeData.stream().map(TradeDataBaseDto::getClosedPrice).collect(Collectors.toList());
+        Map<BigDecimal, BigDecimal> emaMap = emaCalculatorService.calculate(closedPriceValues);
+        //Step 2: Calculate MACD (Difference between 12 EMA - 26 EMA)
+        List<BigDecimal> macds = emaCalculatorService.calculateMacd(emaMap);
+        //Step 3: Calculate 9MACD
+        List<TradeMovAvgConvDivgDto> nineMacdAverage = emaCalculatorService.calculateNineEmaMacd(macds);
+
+        return nineMacdAverage;
     }
 
     private PageRequest getPageRequest(FilterRequest filterRequest) {

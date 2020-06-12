@@ -1,6 +1,7 @@
 package com.trade.controller;
 
 import com.trade.pojo.TradeDataBaseDto;
+import com.trade.pojo.TradeMovAvgConvDivgDto;
 import com.trade.pojo.TradeRelativeDataDto;
 import com.trade.pojo.request.FilterRequest;
 import com.trade.service.TradeChartService;
@@ -38,4 +39,11 @@ public class TradeController {
         return ResponseEntity.ok(tradeChartService.getDailyRelativeTradeDataByIndex(index, filterRequest, relativeIndexFactor));
     }
 
+
+    @GetMapping("/trades/byMACD")
+    @ResponseBody
+    public ResponseEntity<List<TradeMovAvgConvDivgDto>> getTradeDataByMacd(@RequestParam(value = "index", required = false, defaultValue = "BANKNIFTY") String index,
+                                                                                 FilterRequest filterRequest) {
+        return ResponseEntity.ok(tradeChartService.getDailyTradeDataByMacd(index, filterRequest));
+    }
 }

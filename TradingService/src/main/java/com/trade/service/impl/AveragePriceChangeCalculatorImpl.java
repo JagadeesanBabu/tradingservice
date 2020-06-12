@@ -17,6 +17,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.trade.service.impl.ArithmeticHelper.calculateAverage;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -89,11 +91,5 @@ public class AveragePriceChangeCalculatorImpl implements AveragePriceChangeCalcu
 
     }
 
-    private BigDecimal calculateAverage(List<BigDecimal> bigDecimals, int rsiSize) {
-        BigDecimal sum = bigDecimals.stream()
-                .map(Objects::requireNonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return sum.divide(new BigDecimal(rsiSize), RoundingMode.HALF_UP);
 
-    }
 }
