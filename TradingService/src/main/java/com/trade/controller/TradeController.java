@@ -33,8 +33,9 @@ public class TradeController {
     @GetMapping("/trades/byRelativeStrength")
     @ResponseBody
     public ResponseEntity<List<TradeRelativeDataDto>> getTradeDataByIndexByRsi(@RequestParam(value = "index", required = false, defaultValue = "BANKNIFTY") String index,
+                                                                        @RequestParam(value = "relativeIndexFactor") Integer relativeIndexFactor,
                                                                         FilterRequest filterRequest) {
-        return ResponseEntity.ok(tradeChartService.getDailyRelativeTradeDataByIndex(index, filterRequest));
+        return ResponseEntity.ok(tradeChartService.getDailyRelativeTradeDataByIndex(index, filterRequest, relativeIndexFactor));
     }
 
 }

@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface TradeChartService {
     List<TradeDataBaseDto> getDailyTradeClosedPriceByIndex(String index, FilterRequest filterRequest);
-    List<TradeRelativeDataDto> getDailyRelativeTradeDataByIndex(String index, FilterRequest filterRequest);
+    List<TradeRelativeDataDto> getDailyRelativeTradeDataByIndex(String index, FilterRequest filterRequest, Integer relativeIndexFactor);
 
 }

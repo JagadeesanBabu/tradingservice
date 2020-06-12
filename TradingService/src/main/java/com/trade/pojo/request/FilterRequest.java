@@ -16,7 +16,6 @@ public class FilterRequest {
     private Sort.Direction sortOrder;
     private Integer from;
     private Integer size;
-    private Integer relativeIndexFactor;
 
     public Integer getFrom() {
         return Objects.isNull(from) ? 0 : from;
@@ -25,8 +24,6 @@ public class FilterRequest {
     public Integer getSize() {
         return Objects.isNull(size) ? 10 : size;
     }
-
-    public Integer getRelativeIndexFactor() { return Objects.isNull(relativeIndexFactor) ? 13 : relativeIndexFactor; }
 
     public String getSortValue() { return Objects.isNull(sortValue) ? "tradeDate" : sortValue; }
 
