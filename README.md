@@ -10,13 +10,13 @@ TRADING SERVICE API is a Spring Boot project that exposes a REST API to query th
 
 - Docker
 - Dbeaver (Postgres Client Tool) `https://dbeaver.io/download/`
-- Open Jdk 14 (`brew cask install java`)
+- Open Jdk 11 (`brew cask install homebrew/cask-versions/java11`)
 - Gradle `brew cask install gradle`
 
 
 ### Service Dependencies
 
-- Java 14
+- Java 11
 
 - postgres - TRADING DATA relies on postgres to store and query data
 
