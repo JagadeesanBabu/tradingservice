@@ -22,13 +22,13 @@ public class FilterRequest {
     }
 
     public Integer getSize() {
-        return Objects.isNull(size) ? 10 : size;
+        return Objects.isNull(size) ? 108 : size;
     }
 
     public String getSortValue() { return Objects.isNull(sortValue) ? "tradeDate" : sortValue; }
 
     public Sort.Direction getSortOrder() {
-        return Objects.isNull(sortOrder) ? Sort.Direction.DESC : sortOrder;
+        return Objects.isNull(sortOrder) ? Sort.Direction.ASC : sortOrder;
     }
 
 }
