@@ -157,12 +157,6 @@ dependencies {
 
 }
 
-flyway {
-    url = 'jdbc:postgresql://0.0.0.0:5431/trade'
-    user = 'postgres'
-    password = 'postgres'
-}
-
 //integration
 dependencies {
     integrationCompile sourceSets.test.output

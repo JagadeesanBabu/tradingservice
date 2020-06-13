@@ -1,3 +1,6 @@
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 INSERT INTO trading_data (index, id,trade_date,open_price,high_price,low_price,closed_price,no_of_shares_traded,turnover)
 values('BANKNIFTY', uuid_generate_v4(),'01-Jan-20',32237.90,32348.00,32057.20,32102.90,184671555,3183.97);
 INSERT INTO trading_data (index, id,trade_date,open_price,high_price,low_price,closed_price,no_of_shares_traded,turnover)

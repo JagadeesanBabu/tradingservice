@@ -19,6 +19,9 @@ spring:
         show-sql: false
     flyway:
         enabled: true
+        url: jdbc:postgresql://0.0.0.0:5431/trade
+        user: postgres
+        password: postgres
 swagger:
     pathmatchers: /favicon.ico, /v2/**
 web:
@@ -28,3 +31,9 @@ web:
         methods: "*"
         headers: "*"
         pattern: "/**"
+
+pollService:
+    nse:
+        url:
+        connectTimeOut: 60s
+        readTimeOut: 60s
