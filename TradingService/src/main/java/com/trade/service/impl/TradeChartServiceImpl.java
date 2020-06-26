@@ -11,10 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +28,9 @@ public class TradeChartServiceImpl implements TradeChartService {
 
     @Override
     public List<TradeDataBaseDto> getDailyTradeClosedPriceByIndex(String index, FilterRequest filterRequest) {
-        return mapper.toTradeDataDtoList(repository.findAllByIndex(index, getPageRequest(filterRequest)));
+        return (Objects.nonNull(filterRequest.getFromDate()) && Objects.nonNull(filterRequest.getEndDate())) ?
+                mapper.toTradeDataDtoList(repository.findAllByTradeDateBetweenAndIndex(filterRequest.getFromDate(), filterRequest.getEndDate(), index, getPageRequest(filterRequest))) :
+                mapper.toTradeDataDtoList(repository.findAllByIndex(index, getPageRequest(filterRequest)));
     }
 
     @Override

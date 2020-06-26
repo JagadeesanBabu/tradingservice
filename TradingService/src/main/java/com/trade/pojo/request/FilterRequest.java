@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Objects;
 
 @Data
@@ -16,6 +20,11 @@ public class FilterRequest {
     private Sort.Direction sortOrder;
     private Integer from;
     private Integer size;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date fromDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date endDate;
+
 
     public Integer getFrom() {
         return Objects.isNull(from) ? 0 : from;
