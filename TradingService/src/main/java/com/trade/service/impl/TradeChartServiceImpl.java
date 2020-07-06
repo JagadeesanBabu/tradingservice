@@ -35,7 +35,7 @@ public class TradeChartServiceImpl implements TradeChartService {
 
     @Override
     public List<TradeRelativeDataDto> getDailyRelativeTradeDataByIndex(String index, FilterRequest filterRequest, Integer periodLength) {
-        List<TradeDataBaseDto> initialTradeData = mapper.toTradeDataDtoList(repository.findAllByIndex(index, getPageRequest(filterRequest)));
+        List<TradeDataBaseDto> initialTradeData = this.getDailyTradeClosedPriceByIndex(index, filterRequest);
         //Step 1: price change calculator
         List<PriceChangeDataDto> priceChangeDataDtos = priceChangeService.calculate(initialTradeData);
         //Step 2: average gain loss on price change calculator
@@ -46,7 +46,7 @@ public class TradeChartServiceImpl implements TradeChartService {
 
     @Override
     public List<TradeMovAvgConvDivgDto> getDailyTradeDataByMacd(String index, FilterRequest filterRequest) {
-        List<TradeDataBaseDto> initialTradeData = mapper.toTradeDataDtoList(repository.findAllByIndex(index, getPageRequest(filterRequest)));
+        List<TradeDataBaseDto> initialTradeData = this.getDailyTradeClosedPriceByIndex(index, filterRequest);
 
         //Step 1: Calculate 12 EMA & 26 EMA
         // Key 12 EMA & 26 EMA
