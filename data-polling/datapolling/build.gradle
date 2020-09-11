@@ -1,0 +1,179 @@
+buildscript {
+	ext {
+		lombokVersion = '1.18.8'
+		dependencyCheckVersion = '5.2.1'
+		springBootVersion = '2.2.7.RELEASE'
+		springCloudVersion = 'Hoxton.SR2'
+		mapstructVersion = '1.2.0.Final'
+		lombokGradlePluginVersion = '2.0'
+	
+		jUnitVersion = '5.4.2'
+	
+		dependencyManagementVersion = '1.0.7.RELEASE'
+		logbackVersion = '6.3'
+		janinoVersion = '3.0.12'
+	
+	}
+
+	repositories {
+		mavenCentral()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("io.spring.gradle:dependency-management-plugin:${dependencyManagementVersion}")
+		classpath("org.owasp:dependency-check-gradle:${dependencyCheckVersion}")
+		classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M2'
+	}
+}
+
+plugins {
+	id 'jacoco'
+	id 'net.researchgate.release' version '2.6.0'
+	id 'org.unbroken-dome.test-sets' version '2.1.1'
+	id 'net.ltgt.apt' version '0.15'
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'maven'
+apply plugin: 'jacoco'
+apply plugin: 'base'
+apply plugin: 'project-report'
+apply plugin: "net.ltgt.apt"
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+jacoco {
+	toolVersion = "0.8.3"
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+}
+
+configurations {
+	integrationCompile.extendsFrom testCompile
+	integrationRuntime.extendsFrom testRuntime
+	all {
+		exclude group: 'org.slf4j', module: 'slf4j-simple'
+		exclude group: 'org.springframework.security', module: 'spring-security-rsa'
+		exclude group: 'junit', module: 'junit'
+		exclude group: 'org.springframework.integration', module: 'spring-integration-tuple'
+		exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+	}
+}
+
+dependencies {
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+	compile 'org.springframework.boot:spring-boot-starter-amqp'
+	compile 'org.springframework.cloud:spring-cloud-stream'
+	compile 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+
+}
+
+//selenium
+dependencies {
+     compile group: 'org.seleniumhq.selenium', name: 'selenium-firefox-driver', version: '3.141.59'
+    /* groovylint-disable-next-line DuplicateStringLiteral */
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '2.41.0'
+}
+
+// Jackson jsr310 (date parsing)
+dependencies {
+	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.0'
+}
+
+
+//logback
+dependencies {
+	compile group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: "${logbackVersion}"
+	compile group: 'org.codehaus.janino', name: 'janino', version: "${janinoVersion}"
+}
+
+// code generation
+dependencies {
+	compile group: 'org.projectlombok', name: 'lombok', version: "${lombokVersion}"
+
+	compile group: 'org.mapstruct', name: 'mapstruct', version: "${mapstructVersion}"
+	annotationProcessor(
+			"org.projectlombok:lombok:${lombokVersion}",
+			"org.mapstruct:mapstruct-processor:${mapstructVersion}"
+	)
+
+	testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+	testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
+}
+//jaxb java 11
+dependencies {
+	implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
+	implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	implementation 'javax.activation:activation:1.1.1'
+}
+
+dependencyManagement {
+	resolutionStrategy {
+		cacheChangingModulesFor 0, 'seconds'
+	}
+	imports {
+		mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+//test
+dependencies {
+	testCompile group: 'org.springframework.boot', name: 'spring-boot-test-autoconfigure'
+	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+
+	// Awaitility
+	testCompile group: 'org.awaitility', name: 'awaitility', version: '3.1.2'
+
+
+	// JUnit 5
+	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "${jUnitVersion}"
+	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "${jUnitVersion}"
+	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: "${jUnitVersion}"
+
+
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ['src/main/java', 'build/generated/source/annotationProcessor/']
+		}
+	}
+}
+
+//integration
+dependencies {
+	integrationCompile sourceSets.test.output
+}
+
+testSets {
+	integration
+			{ dirName = 'integration-test' }
+}
+
+
+test {
+	useJUnitPlatform()
+}
+
+integration {
+	useJUnitPlatform()
+	systemProperties System.properties
+}
+
+task unit(type: Test) {
+}

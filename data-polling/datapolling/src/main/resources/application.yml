@@ -1,0 +1,42 @@
+logging:
+    level:
+        root: INFO
+
+spring:
+    application:
+        name: yahoo-queue
+        default-locale: 'en-GB'
+        index: ${random.uuid}
+
+    cloud:
+        stream:
+            default:
+                content-type: application/json
+            rabbit:
+                bindings:
+                    yahooTradeDataInput:
+                        consumer:
+                            auto-bind-dlq: true
+                            republishToDlq: true
+                            
+            bindings:
+                yahooTradeDataInput:
+                    destination: yahoo-tradeData-v1
+                    group: jet
+                    exclusive: true
+                    consumer:
+                        max-attempts: 3
+                yahooTradeDataOutput:
+                    destination: yahoo-tradeData-v1
+        
+
+    jackson:
+        serialization:
+            write-dates-as-timestamps: false
+
+    rabbitmq:
+        host: localhost
+        port: 5672
+        username: gw_rabbitmq
+        password: gw_rabbitmq
+        virtual-host:

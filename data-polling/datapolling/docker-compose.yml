@@ -1,0 +1,11 @@
+version: '3.6'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.7-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=gw_rabbitmq
+      - RABBITMQ_DEFAULT_PASS=gw_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
