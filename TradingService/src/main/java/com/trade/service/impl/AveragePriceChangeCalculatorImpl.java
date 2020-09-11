@@ -53,7 +53,11 @@ public class AveragePriceChangeCalculatorImpl implements AveragePriceChangeCalcu
                         BigDecimal calculatedPreviousAvgChangeLoss = previousAvgData.get().getAvgChangeLoss().multiply(new BigDecimal(periodLength)).add(negativePriceChangeValue);
                         BigDecimal averageGain = calculatedPreviousAvgChangeGain.divide(new BigDecimal(periodLength + 1), RoundingMode.HALF_UP);
                         BigDecimal averageLoss = calculatedPreviousAvgChangeLoss.divide(new BigDecimal(periodLength + 1), RoundingMode.HALF_UP);
-                        AverageDataDto currentAverageDataDto = AverageDataDto.builder().avgChangeLoss(averageLoss).avgChangeGain(averageGain).build();
+                        AverageDataDto currentAverageDataDto = AverageDataDto.builder()
+                                .avgChangeLoss(averageLoss)
+                                .avgChangeGain(averageGain)
+                                .tradeDate(priceChangeDataDtos.get(indexRange).getTradeDate())
+                                .build();
                         averageDataDtos.add(currentAverageDataDto);
                         previousAvgData.set(currentAverageDataDto);
 
@@ -87,7 +91,11 @@ public class AveragePriceChangeCalculatorImpl implements AveragePriceChangeCalcu
         BigDecimal avgPositiveGain = calculateAverage(positvePriceChange, periodLength);
         BigDecimal avgNegativeGain = calculateAverage(negativePriceChange, periodLength);
 
-        return AverageDataDto.builder().avgChangeGain(avgPositiveGain).avgChangeLoss(avgNegativeGain).build();
+        return AverageDataDto.builder()
+                .avgChangeGain(avgPositiveGain)
+                .avgChangeLoss(avgNegativeGain)
+                .tradeDate(priceChangeDataDtos.get(periodLength + 1).getTradeDate())
+                .build();
 
     }
 

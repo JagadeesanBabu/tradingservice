@@ -28,7 +28,11 @@ public class RelativeStrengthIndexCalculatorImpl implements RelativeStrengthInde
                     log.info("Calculate relative Strength & index for averageDto {}",averageDataDto);
                     BigDecimal relativeStrength = averageDataDto.getAvgChangeGain().divide(averageDataDto.getAvgChangeLoss(), RoundingMode.HALF_UP);
                     BigDecimal relativeIndex = calculateRelativeIndex(relativeStrength);
-                    TradeRelativeDataDto relativeDataDto = TradeRelativeDataDto.builder().relativeIndex(relativeIndex).relativeStrength(relativeStrength).build();
+                    TradeRelativeDataDto relativeDataDto = TradeRelativeDataDto.builder()
+                            .relativeIndex(relativeIndex)
+                            .relativeStrength(relativeStrength)
+                            .tradeDate(averageDataDto.getTradeDate())
+                            .build();
                     relativeDataDtos.add(relativeDataDto);
                 });
         return relativeDataDtos;

@@ -11,10 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,12 +28,14 @@ public class TradeChartServiceImpl implements TradeChartService {
 
     @Override
     public List<TradeDataBaseDto> getDailyTradeClosedPriceByIndex(String index, FilterRequest filterRequest) {
-        return mapper.toTradeDataDtoList(repository.findAllByIndex(index, getPageRequest(filterRequest)));
+        return (Objects.nonNull(filterRequest.getFromDate()) && Objects.nonNull(filterRequest.getEndDate())) ?
+                mapper.toTradeDataDtoList(repository.findAllByTradeDateBetweenAndIndex(filterRequest.getFromDate(), filterRequest.getEndDate(), index, getPageRequest(filterRequest))) :
+                mapper.toTradeDataDtoList(repository.findAllByIndex(index, getPageRequest(filterRequest)));
     }
 
     @Override
     public List<TradeRelativeDataDto> getDailyRelativeTradeDataByIndex(String index, FilterRequest filterRequest, Integer periodLength) {
-        List<TradeDataBaseDto> initialTradeData = mapper.toTradeDataDtoList(repository.findAllByIndex(index, getPageRequest(filterRequest)));
+        List<TradeDataBaseDto> initialTradeData = this.getDailyTradeClosedPriceByIndex(index, filterRequest);
         //Step 1: price change calculator
         List<PriceChangeDataDto> priceChangeDataDtos = priceChangeService.calculate(initialTradeData);
         //Step 2: average gain loss on price change calculator
@@ -47,7 +46,7 @@ public class TradeChartServiceImpl implements TradeChartService {
 
     @Override
     public List<TradeMovAvgConvDivgDto> getDailyTradeDataByMacd(String index, FilterRequest filterRequest) {
-        List<TradeDataBaseDto> initialTradeData = mapper.toTradeDataDtoList(repository.findAllByIndex(index, getPageRequest(filterRequest)));
+        List<TradeDataBaseDto> initialTradeData = this.getDailyTradeClosedPriceByIndex(index, filterRequest);
 
         //Step 1: Calculate 12 EMA & 26 EMA
         // Key 12 EMA & 26 EMA
